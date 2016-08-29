@@ -12,23 +12,53 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
 };
 
+function setEnemyCol(x) {
+    for (var i = 0; i < 5; i++) {
+        var colStart = (i * 101) - 63;
+        var colEnd = colStart + 100;
+        if (x > colStart && x < colEnd) {
+            var col = i;
+            return col;
+        }
+    }
+}
+
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-
     if (this.x < 606) {
         var timedSpeed = this.speed * dt;
         this.x = this.x + timedSpeed;
+        this.col = setEnemyCol(this.x);
+        var enemyPos = this.row + "" + this.col;
+        if (enemyPos === playerPos) {
+            player.reset();
+        }
+        //console.log(enemyPos);
     } else {
-        var startRow = this.randomNum(1, 4);
-        this.y = (startRow * 83) - 30;
+        // reset enemy position and speed
+        this.row = this.randomNum(1, 4);
+        this.y = (this.row * 83) - 30;
         this.x = -101;
         this.speed = this.randomNum(100, 800);
     }
 };
+
+var colPosition = [];
+
+var setColPosition = function () {
+    for (var i = 0; i < 5; i++) {
+        hitPosition = (i * 101) - 63;
+        colPosition.push(hitPosition);
+    }
+}
+
+setColPosition();
+
+
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -62,6 +92,8 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+var playerPos;
+
 Player.prototype.handleInput = function(key) {
     var moveY = 83;
     var moveX = 101;
@@ -81,7 +113,7 @@ Player.prototype.handleInput = function(key) {
         this.x += moveX;
         this.col++;
     }
-    console.log("row: " + this.row + " col: " + this.col);
+    playerPos = this.row + "" + this.col;
 };
 
 // Now instantiate your objects.
