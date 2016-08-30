@@ -1,31 +1,17 @@
 var allEnemies = [];
+var playerPos;
 
+/**
+ * Creates a new Enemy
+ * @constructor
+ */
 var Enemy = function() {
-    this.col = 0;
-    this.row = this.randomNum(1, 4);
-    this.x = -101;
-    this.y = (this.row * 83) - 30;
-    this.speed = this.randomNum(100, 800);
+    this.reset();
     this.sprite = 'images/enemy-bug.png';
-    allEnemies.push(this);
 };
 
 Enemy.prototype.update = function(dt) {
-    if (this.x < 606) {
-        var timedSpeed = this.speed * dt;
-        this.x = this.x + timedSpeed;
-        this.col = this.setEnemyCol(this.x);
-        var enemyPos = this.row + "" + this.col;
-        if (enemyPos === playerPos) {
-            console.log("collision!");
-            player.reset();
-        }
-    } else {
-        this.row = this.randomNum(1, 4);
-        this.y = (this.row * 83) - 30;
-        this.x = -101;
-        this.speed = this.randomNum(100, 800);
-    }
+    this.move(dt);
 };
 
 Enemy.prototype.render = function() {
@@ -36,6 +22,24 @@ Enemy.prototype.randomNum = function (min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 };
 
+Enemy.prototype.move = function (dt) {
+    if (this.x < 606) {
+        var timedSpeed = this.speed * dt;
+        this.x = this.x + timedSpeed;
+        this.collisionDetect();
+    } else {
+        this.reset();
+    }
+};
+
+Enemy.prototype.reset = function () {
+    this.col = 0;
+    this.row = this.randomNum(1, 4);
+    this.y = (this.row * 83) - 30;
+    this.x = -101;
+    this.speed = this.randomNum(100, 800);
+};
+
 Enemy.prototype.setEnemyCol = function (x) {
     for (var i = 0; i < 5; i++) {
         var colStart = (i * 101) - 63;
@@ -44,6 +48,15 @@ Enemy.prototype.setEnemyCol = function (x) {
             var col = i;
             return col;
         }
+    }
+};
+
+Enemy.prototype.collisionDetect = function () {
+    this.col = this.setEnemyCol(this.x);
+    var enemyPos = this.row + "" + this.col;
+    if (enemyPos === playerPos) {
+        console.log("collision!");
+        player.reset();
     }
 };
 
@@ -58,8 +71,6 @@ Player.prototype.update = function() {
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
-
-var playerPos;
 
 Player.prototype.handleInput = function(key) {
     var moveY = 83;
@@ -92,12 +103,15 @@ Player.prototype.reset = function () {
     playerPos = this.row + "" + this.col;
 };
 
-player = new Player();
+var player = new Player();
 
-bob = new Enemy();
-frank = new Enemy();
-jim = new Enemy();
+function createEnemies(enemyNum) {
+    for (var i = 0; i < enemyNum; i++) {
+        allEnemies.push(new Enemy());
+    }
+}
 
+createEnemies(3);
 
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
