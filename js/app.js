@@ -72,6 +72,19 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+
+/**
+ * Player.prototype.setPlayerPos
+ *
+ * @description Update playerPos var with current position - Updates the global
+ * playerPos var which is used to detect if a enemy sprite has collided with the
+ * player sprite
+ * @param  {type} x player's x position
+ * @param  {type} y player's y position
+ */
+Player.prototype.setPlayerPos = function (x,y) {
+    playerPos = x + "" + y;
+};
 Player.prototype.handleInput = function(key) {
     var moveY = 83;
     var moveX = 101;
@@ -92,7 +105,7 @@ Player.prototype.handleInput = function(key) {
         this.x += moveX;
         this.col++;
     }
-    playerPos = this.row + "" + this.col;
+    this.setPlayerPos(this.row, this.col);
 };
 
 Player.prototype.reset = function () {
@@ -100,7 +113,7 @@ Player.prototype.reset = function () {
     this.row = 5;
     this.x = this.col * 101;
     this.y = (this.row * 83) - 40;
-    playerPos = this.row + "" + this.col;
+    this.setPlayerPos(this.row, this.col);
 };
 
 var player = new Player();
