@@ -66,7 +66,7 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
-        main();
+        startScreen();
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -162,6 +162,46 @@ var Engine = (function(global) {
         // noop
     }
 
+    // This function was added to add a start screen before the main game loop
+    // is called. It draws a background, then calls the playerSelect() method to
+    // draw the character choices. A click event listener is added to set the
+    // player instance sprite and call the main game loop.
+    function startScreen() {
+        // draw background
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+        // draw text
+        ctx.fillStyle = "black";
+        ctx.textAlign = "center";
+        ctx.font="30px sans-serif";
+        ctx.fillText("Select a character:", canvas.width / 2, 200);
+
+        // draw player character choices
+        player.playerSelect();
+
+        // click event to select character choice
+        canvas.addEventListener('click', setPlayerSprite, false);
+
+        function setPlayerSprite() {
+            var x = event.pageX - canvas.offsetLeft; // canvas x position
+            var y = event.pageY - canvas.offsetTop; // canvas y position
+
+            // for each player character on the start screen, if the mouse click
+            // is on the character image, change the player instance sprite to
+            // match, remove the start screen, and start the main game loop
+            allPlayers.forEach(function(p) {
+                if (x > p.left && x < p.left + p.width
+                    && y > p.top && y < p.top + p.height) {
+                    player.sprite = p.sprite;
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.removeEventListener('click', setPlayerSprite, false);
+                    return main();
+                }
+            });
+        }
+    }
+
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
@@ -171,7 +211,10 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png'
     ]);
     Resources.onReady(init);
 

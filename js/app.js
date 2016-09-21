@@ -5,6 +5,8 @@ var allEnemies = [];
 /** Var to store player's position */
 var playerPos;
 
+/** Array to store all player character objects*/
+var allPlayers = [];
 
 /**
  * Enemy
@@ -225,7 +227,52 @@ Player.prototype.reset = function () {
     this.setPlayerPos(this.row, this.col);
 };
 
+/**
+ * Player.prototype.playerSelect
+ *
+ * @description Render the Player sprite choices on the Start Screen - Image()
+ * object instances for each character sprite are pushed to an array with the
+ * properties needed to render the character on the start screen. This method is
+ * called by the startScreen() function in engine.js.
+ */
+Player.prototype.playerSelect = function () {
+    // Array to store player sprites that were loaded in engine.js
+    var playerSprites = [
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png'
+    ];
 
+    // For each player sprite, push an object to allPlayers array with all
+    // properties needed to render the sprite in the correct position on the
+    // start screen
+    for (var i = 0; i < playerSprites.length; i++) {
+        var spriteWidth = 101;
+        var spriteHeight = 171;
+        var topPos = 218;
+        var leftPos = (spriteWidth * i) + (20 * (i + 1));
+        var image = new Image();
+        allPlayers.push({
+            width: spriteWidth,
+            height: spriteHeight,
+            left: leftPos,
+            top: topPos,
+            sprite: playerSprites[i],
+            image: image
+        });
+    }
+
+    // For each object in the allPlayers array, render the Image instance
+    // on the canvas
+    allPlayers.forEach(function(p) {
+        var image = p.image;
+        image.onload = function(){
+            ctx.drawImage(image, p.left, p.top, p.width, p.height);
+        }
+        image.src = p.sprite;
+    });
+};
 
 /** Create Player instance */
 var player = new Player();
