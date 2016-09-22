@@ -175,7 +175,7 @@ var Engine = (function(global) {
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         ctx.font="30px sans-serif";
-        ctx.fillText("Select a character:", canvas.width / 2, 200);
+        ctx.fillText("Select a character:", canvas.width / 2, 180);
 
         // draw player character choices
         player.playerSelect();
@@ -183,6 +183,7 @@ var Engine = (function(global) {
         // click event to select character choice
         canvas.addEventListener('click', setPlayerSprite, false);
 
+        // function to select character sprite
         function setPlayerSprite() {
             var x = event.pageX - canvas.offsetLeft; // canvas x position
             var y = event.pageY - canvas.offsetTop; // canvas y position
@@ -197,6 +198,42 @@ var Engine = (function(global) {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     canvas.removeEventListener('click', setPlayerSprite, false);
                     return main();
+                }
+            });
+        }
+
+        // mouse move event to highlight the character when mouse cursor is
+        // above it
+        canvas.addEventListener('mousemove', highlightSprite, false);
+
+        // function to highlight the character
+        function highlightSprite() {
+            // For each player character, draw the character 20px higher in the
+            // y axis if the mouse is over the character. If it isn't, then draw
+            // the character in the default position.
+            allPlayers.forEach(function(p) {
+                var x = event.pageX - canvas.offsetLeft; // canvas x position
+                var y = event.pageY - canvas.offsetTop; // canvas y position
+
+                // character's left, right, top and bottom canvas coordinates
+                var left = p.left;
+                var right = p.left + p.width;
+                var top = p.top;
+                var bot = p.top + p.height;
+
+                // if character is not highlighted and cursor is above it
+                // draw character 20px higher
+                if (!p.highlighted && x > left && x < right && y > top && y < bot) {
+                        ctx.clearRect(p.left, p.top, p.width, p.height);
+                        ctx.drawImage(p.image, p.left, p.top - 20, p.width, p.height);
+                        p.highlighted = 1;
+
+                // else if character is hightlighted and cursor is not above it
+                // draw character is default position
+                } else if (p.highlighted && !(x > left && x < right && y > top && y < bot)){
+                    ctx.clearRect(p.left, p.top - 20, p.width, p.height);
+                    ctx.drawImage(p.image, p.left, p.top, p.width, p.height);
+                    p.highlighted = 0;
                 }
             });
         }

@@ -252,6 +252,7 @@ Player.prototype.playerSelect = function () {
         var spriteHeight = 171;
         var topPos = 218;
         var leftPos = (spriteWidth * i) + (20 * (i + 1));
+        var highlighted = 0;
         var image = new Image();
         allPlayers.push({
             width: spriteWidth,
@@ -259,7 +260,8 @@ Player.prototype.playerSelect = function () {
             left: leftPos,
             top: topPos,
             sprite: playerSprites[i],
-            image: image
+            image: image,
+            highlighted: highlighted
         });
     }
 
