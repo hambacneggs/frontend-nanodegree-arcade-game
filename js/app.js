@@ -121,6 +121,7 @@ Enemy.prototype.collisionDetect = function () {
     var enemyPos = this.row + "" + this.col;
         console.log("collision!");
     if (enemyPos === player.playerPos) {
+        player.score = 0;
         player.reset();
     }
 };
@@ -136,6 +137,8 @@ var Player = function() {
     this.reset();
     this.sprite = 'images/char-boy.png';
     this.playerPos;
+    this.score = 0;
+    this.highScore = 0;
 };
 
 
@@ -158,6 +161,7 @@ Player.prototype.update = function() {
  */
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    this.drawScoreboard(this.score, this.highScore);
 };
 
 
@@ -193,7 +197,7 @@ Player.prototype.handleInput = function(key) {
         this.row--;
         if (this.row === 0) {
             this.reset();
-            console.log("win!");
+            this.scoreWin();
         }
     } else if (key === "down" && this.row < 5) {
         this.y += moveY;
@@ -271,6 +275,38 @@ Player.prototype.playerSelect = function () {
         }
         image.src = p.sprite;
     });
+};
+
+
+/**
+ * Player.prototype.drawScoreboard
+ *
+ * @description Draws the score and the high score on the canvas.
+ *
+ * @param  {number} score     Number of times the player has completed the game
+ * without running into an enemy.
+ * @param  {number} highScore Highest number of times the player completed the
+ * game without running into an enemy.
+ */
+Player.prototype.drawScoreboard = function (score, highScore) {
+    ctx.fillStyle = "white";
+    ctx.font="20px monospace";
+    ctx.fillText("HIGH SCORE", 70, 70);
+    ctx.fillText(highScore, 155, 70);
+    ctx.fillText("SCORE", 435, 70);
+    ctx.fillText(score, 490, 70);
+};
+
+/**
+ * Player.prototype.scoreWin
+ *
+ * @description Increments the player's score and high score properties.
+ */
+Player.prototype.scoreWin = function () {
+    this.score++;
+    if (this.score > this.highScore) {
+        this.highScore++;
+    }
 };
 
 /** Create Player instance */
