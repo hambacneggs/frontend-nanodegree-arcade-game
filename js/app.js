@@ -119,7 +119,6 @@ Enemy.prototype.setEnemyCol = function (x) {
 Enemy.prototype.collisionDetect = function () {
     this.col = this.setEnemyCol(this.x);
     var enemyPos = this.row + "" + this.col;
-        console.log("collision!");
     if (enemyPos === player.playerPos) {
         player.score = 0;
         player.reset();
@@ -147,7 +146,8 @@ var Player = function() {
  *
  * @description Update Player instance - this is required for this project, but
  * I haven't found a need to use a player update method. All player updates are
- * taken care of by the handleInput method.
+ * taken care of by the handleInput method. Collision detection is handled with
+ * the enemy update method.
  */
 Player.prototype.update = function() {
 };
