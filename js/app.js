@@ -1,10 +1,6 @@
 /** Array to store all enemy instances */
 var allEnemies = [];
 
-
-/** Var to store player's position */
-var playerPos;
-
 /** Array to store all player character objects*/
 var allPlayers = [];
 
@@ -123,8 +119,8 @@ Enemy.prototype.setEnemyCol = function (x) {
 Enemy.prototype.collisionDetect = function () {
     this.col = this.setEnemyCol(this.x);
     var enemyPos = this.row + "" + this.col;
-    if (enemyPos === playerPos) {
         console.log("collision!");
+    if (enemyPos === player.playerPos) {
         player.reset();
     }
 };
@@ -139,6 +135,7 @@ Enemy.prototype.collisionDetect = function () {
 var Player = function() {
     this.reset();
     this.sprite = 'images/char-boy.png';
+    this.playerPos;
 };
 
 
@@ -167,14 +164,14 @@ Player.prototype.render = function() {
 /**
  * Player.prototype.setPlayerPos
  *
- * @description Update playerPos var with current position - Updates the global
- * playerPos var which is used to detect if a enemy sprite has collided with the
- * player sprite
+ * @description Update playerPos property with current position - Updates the
+ * playerPos property which is used to detect if a enemy sprite has collided
+ * with the player sprite
  * @param  {type} x player's x position
  * @param  {type} y player's y position
  */
 Player.prototype.setPlayerPos = function (x,y) {
-    playerPos = x + "" + y;
+    this.playerPos = x + "" + y;
 };
 
 
@@ -184,7 +181,7 @@ Player.prototype.setPlayerPos = function (x,y) {
  * @description Handle keyboard input - Also checks if player is on the edge of
  * the board to prevent the player from moving out of bounds. Also checks if
  * player has won by reaching the top row, then resetting the player's position.
- * playerPos var is updated with current position (used for collision
+ * playerPos property is updated with current position (used for collision
  * detection).
  * @param  {string} key keyboard input
  */
@@ -216,8 +213,8 @@ Player.prototype.handleInput = function(key) {
  * Player.prototype.reset
  *
  * @description Reset the player position - Player's column, row, x and y
- * properties are reset to the starting postion values. playerPos var is updated
- * with current position (used for collision detection).
+ * properties are reset to the starting postion values. playerPos property is
+ * updated with current position (used for collision detection).
  */
 Player.prototype.reset = function () {
     this.col = 2;
