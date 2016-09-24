@@ -8,7 +8,7 @@ var allPlayers = [];
  * Enemy
  *
  * @description Create a new Enemy instance, sets position and speed using the
- * .reset method, then sets the sprite for the enemy instance.
+ * reset method, then sets the sprite for the enemy instance.
  * @constructor
  */
 var Enemy = function() {
@@ -20,8 +20,8 @@ var Enemy = function() {
 /**
  * Enemy.prototype.update
  *
- * @description Update enemy instances - Calls the .move method to set the
- * updated position.
+ * @description Update enemy instances - Calls the move method to set the
+ * updated enemy position.
  * @param  {number} dt - Time delta to control animation speed
  */
 Enemy.prototype.update = function(dt) {
@@ -104,8 +104,7 @@ Enemy.prototype.setEnemyCol = function (x) {
         var colStart = (i * 101) - 63;
         var colEnd = colStart + 100;
         if (x > colStart && x < colEnd) {
-            var col = i;
-            return col;
+            return i;
         }
     }
 };
@@ -114,11 +113,11 @@ Enemy.prototype.setEnemyCol = function (x) {
  * Enemy.prototype.collisionDetect
  *
  * @description Collision detection - If enemy is in the same row and column as
- * the player, player will be reset.
+ * the player, player will be reset. Player's score will also reset.
  */
 Enemy.prototype.collisionDetect = function () {
     this.col = this.setEnemyCol(this.x);
-    var enemyPos = this.row + "" + this.col;
+    var enemyPos = this.row + "" + this.col; // string for row and col position
     if (enemyPos === player.playerPos) {
         player.score = 0;
         player.reset();
@@ -129,13 +128,12 @@ Enemy.prototype.collisionDetect = function () {
 /**
  * Player
  *
- * @description Create Player instance
+ * @description Create Player instance - Calls reset to set starting position.
+ * Sets the initial score and highScore properties.
  * @constructor
  */
 var Player = function() {
     this.reset();
-    this.sprite = 'images/char-boy.png';
-    this.playerPos;
     this.score = 0;
     this.highScore = 0;
 };
@@ -157,7 +155,8 @@ Player.prototype.update = function() {
  * Player.prototype.render
  *
  * @description Render Player instance - Draw the player sprite on the canvas at
- * the current x and y position.
+ * the current x and y position. Draw the scoreboard with the current score and
+ * highscore.
  */
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -170,9 +169,9 @@ Player.prototype.render = function() {
  *
  * @description Update playerPos property with current position - Updates the
  * playerPos property which is used to detect if a enemy sprite has collided
- * with the player sprite
- * @param  {type} x player's x position
- * @param  {type} y player's y position
+ * with the player sprite.
+ * @param  {number} x player's x position
+ * @param  {number} y player's y position
  */
 Player.prototype.setPlayerPos = function (x,y) {
     this.playerPos = x + "" + y;
@@ -184,31 +183,38 @@ Player.prototype.setPlayerPos = function (x,y) {
  *
  * @description Handle keyboard input - Also checks if player is on the edge of
  * the board to prevent the player from moving out of bounds. Also checks if
- * player has won by reaching the top row, then resetting the player's position.
+ * player has won by reaching the top row, then resetting the player's position
+ * and incrementing the player's score.
  * playerPos property is updated with current position (used for collision
  * detection).
  * @param  {string} key keyboard input
  */
 Player.prototype.handleInput = function(key) {
-    var moveY = 83;
-    var moveX = 101;
+    var moveY = 83; // how far player should move in the y axis
+    var moveX = 101; // how far player should move in the x axis
+    // move up
     if (key === "up" && this.row > 0) {
         this.y -= moveY;
         this.row--;
+        // if player has reached the top row and won
         if (this.row === 0) {
             this.reset();
             this.scoreWin();
         }
+    // move down
     } else if (key === "down" && this.row < 5) {
         this.y += moveY;
         this.row++;
+    // move left
     } else if (key === "left" && this.col > 0) {
         this.x -= moveX;
         this.col--;
+    // move right
     } else if (key === "right" && this.col < 4) {
         this.x += moveX;
         this.col++;
     }
+    // set playerPos, used for collision detection
     this.setPlayerPos(this.row, this.col);
 };
 
@@ -231,10 +237,11 @@ Player.prototype.reset = function () {
 /**
  * Player.prototype.playerSelect
  *
- * @description Render the Player sprite choices on the Start Screen - Image()
- * object instances for each character sprite are pushed to an array with the
- * properties needed to render the character on the start screen. This method is
- * called by the startScreen() function in engine.js.
+ * @description Render the Player sprite choices on the Start Screen - each
+ * character is pushed to the allPlayer array with the properties needed to
+ * render the character on the start screen. Then all player sprites are drawn
+ * on the canvas. This method is called by the startScreen() function in
+ * engine.js.
  */
 Player.prototype.playerSelect = function () {
     // Array to store player sprites that were loaded in engine.js
@@ -244,7 +251,6 @@ Player.prototype.playerSelect = function () {
         'images/char-horn-girl.png',
         'images/char-pink-girl.png'
     ];
-
     // For each player sprite, push an object to allPlayers array with all
     // properties needed to render the sprite in the correct position on the
     // start screen
@@ -265,14 +271,13 @@ Player.prototype.playerSelect = function () {
             highlighted: highlighted
         });
     }
-
     // For each object in the allPlayers array, render the Image instance
     // on the canvas
     allPlayers.forEach(function(p) {
         var image = p.image;
         image.onload = function(){
             ctx.drawImage(image, p.left, p.top, p.width, p.height);
-        }
+        };
         image.src = p.sprite;
     });
 };
@@ -304,6 +309,7 @@ Player.prototype.drawScoreboard = function (score, highScore) {
  */
 Player.prototype.scoreWin = function () {
     this.score++;
+    // increment high score
     if (this.score > this.highScore) {
         this.highScore++;
     }

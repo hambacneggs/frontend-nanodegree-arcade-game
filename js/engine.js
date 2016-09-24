@@ -162,24 +162,26 @@ var Engine = (function(global) {
         // noop
     }
 
-    // This function was added to add a start screen before the main game loop
-    // is called. It draws a background, then calls the playerSelect() method to
-    // draw the character choices. A click event listener is added to set the
-    // player instance sprite and call the main game loop.
+    /**
+     * startScreen
+     *
+     * @description This function was added to add a start screen before the
+     * main game loop is called. It draws a background, then calls the
+     * playerSelect() method to draw the character choices. A click event
+     * listener is added to set the player instance sprite and call the main
+     * game loop.
+     */
     function startScreen() {
         // draw background
         ctx.strokeStyle = "black";
         ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
         // draw text
         ctx.fillStyle = "black";
         ctx.textAlign = "center";
         ctx.font="30px sans-serif";
         ctx.fillText("Select a character:", canvas.width / 2, 180);
-
         // draw player character choices
         player.playerSelect();
-
         // click event to select character choice
         canvas.addEventListener('click', setPlayerSprite, false);
 
@@ -187,13 +189,11 @@ var Engine = (function(global) {
         function setPlayerSprite() {
             var x = event.pageX - canvas.offsetLeft; // canvas x position
             var y = event.pageY - canvas.offsetTop; // canvas y position
-
             // for each player character on the start screen, if the mouse click
             // is on the character image, change the player instance sprite to
             // match, remove the start screen, and start the main game loop
             allPlayers.forEach(function(p) {
-                if (x > p.left && x < p.left + p.width
-                    && y > p.top && y < p.top + p.height) {
+                if (x > p.left && x < p.left + p.width && y > p.top && y < p.top + p.height) {
                     player.sprite = p.sprite;
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     canvas.removeEventListener('click', setPlayerSprite, false);
@@ -214,20 +214,17 @@ var Engine = (function(global) {
             allPlayers.forEach(function(p) {
                 var x = event.pageX - canvas.offsetLeft; // canvas x position
                 var y = event.pageY - canvas.offsetTop; // canvas y position
-
                 // character's left, right, top and bottom canvas coordinates
                 var left = p.left;
                 var right = p.left + p.width;
                 var top = p.top;
                 var bot = p.top + p.height;
-
                 // if character is not highlighted and cursor is above it
                 // draw character 20px higher
                 if (!p.highlighted && x > left && x < right && y > top && y < bot) {
                         ctx.clearRect(p.left, p.top, p.width, p.height);
                         ctx.drawImage(p.image, p.left, p.top - 20, p.width, p.height);
                         p.highlighted = 1;
-
                 // else if character is hightlighted and cursor is not above it
                 // draw character is default position
                 } else if (p.highlighted && !(x > left && x < right && y > top && y < bot)){
