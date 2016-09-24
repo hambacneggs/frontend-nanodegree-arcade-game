@@ -1,6 +1,18 @@
 frontend-nanodegree-arcade-game
 ===============================
 
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
+frontend-nanodegree-arcade-game is a project for the Udacity Front-End Web Developer Nanodegree. It's a basic clone of the classic game 'frogger'.
 
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
+Installation
+------------
+Download and open index.html to start the game.
+
+Usage
+-----
+The game starts with a character selection menu. Click on character you would like to play with.
+
+To move the player, use the arrow keys on the keyboard.
+
+The objective of the game is to cross the road and reach the water. If you reach the water successfully, your score will increase and the player will return to the starting position. Keep playing to increase your score. Try to beat your high score.
+
+Watch out for bugs on the road. If you run into a bug, the game resets and your score goes back to zero.
