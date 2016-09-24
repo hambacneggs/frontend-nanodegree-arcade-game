@@ -29,15 +29,14 @@
             <pre class="prettyprint source linenums"><code>/** Array to store all enemy instances */
 var allEnemies = [];
 
-
-/** Var to store player's position */
-var playerPos;
-
+/** Array to store all player character objects*/
+var allPlayers = [];
 
 /**
  * Enemy
  *
- * @description Create a new Enemy instance
+ * @description Create a new Enemy instance, sets position and speed using the
+ * reset method, then sets the sprite for the enemy instance.
  * @constructor
  */
 var Enemy = function() {
@@ -49,7 +48,8 @@ var Enemy = function() {
 /**
  * Enemy.prototype.update
  *
- * @description Update enemy instances
+ * @description Update enemy instances - Calls the move method to set the
+ * updated enemy position.
  * @param  {number} dt - Time delta to control animation speed
  */
 Enemy.prototype.update = function(dt) {
@@ -132,8 +132,7 @@ Enemy.prototype.setEnemyCol = function (x) {
         var colStart = (i * 101) - 63;
         var colEnd = colStart + 100;
         if (x > colStart &amp;&amp; x &lt; colEnd) {
-            var col = i;
-            return col;
+            return i;
         }
     }
 };
@@ -142,13 +141,13 @@ Enemy.prototype.setEnemyCol = function (x) {
  * Enemy.prototype.collisionDetect
  *
  * @description Collision detection - If enemy is in the same row and column as
- * the player, player will be reset.
+ * the player, player will be reset. Player's score will also reset.
  */
 Enemy.prototype.collisionDetect = function () {
     this.col = this.setEnemyCol(this.x);
-    var enemyPos = this.row + "" + this.col;
-    if (enemyPos === playerPos) {
-        console.log("collision!");
+    var enemyPos = this.row + "" + this.col; // string for row and col position
+    if (enemyPos === player.playerPos) {
+        player.score = 0;
         player.reset();
     }
 };
@@ -157,12 +156,14 @@ Enemy.prototype.collisionDetect = function () {
 /**
  * Player
  *
- * @description Create Player instance
+ * @description Create Player instance - Calls reset to set starting position.
+ * Sets the initial score and highScore properties.
  * @constructor
  */
 var Player = function() {
     this.reset();
-    this.sprite = 'images/char-boy.png';
+    this.score = 0;
+    this.highScore = 0;
 };
 
 
@@ -171,7 +172,8 @@ var Player = function() {
  *
  * @description Update Player instance - this is required for this project, but
  * I haven't found a need to use a player update method. All player updates are
- * taken care of by the handleInput method.
+ * taken care of by the handleInput method. Collision detection is handled with
+ * the enemy update method.
  */
 Player.prototype.update = function() {
 };
@@ -181,55 +183,66 @@ Player.prototype.update = function() {
  * Player.prototype.render
  *
  * @description Render Player instance - Draw the player sprite on the canvas at
- * the current x and y position.
+ * the current x and y position. Draw the scoreboard with the current score and
+ * highscore.
  */
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    this.drawScoreboard(this.score, this.highScore);
 };
+
 
 /**
  * Player.prototype.setPlayerPos
  *
- * @description Update playerPos var with current position - Updates the global
- * playerPos var which is used to detect if a enemy sprite has collided with the
- * player sprite
- * @param  {type} x player's x position
- * @param  {type} y player's y position
+ * @description Update playerPos property with current position - Updates the
+ * playerPos property which is used to detect if a enemy sprite has collided
+ * with the player sprite.
+ * @param  {number} x player's x position
+ * @param  {number} y player's y position
  */
 Player.prototype.setPlayerPos = function (x,y) {
-    playerPos = x + "" + y;
+    this.playerPos = x + "" + y;
 };
+
 
 /**
  * Player.prototype.handleInput
  *
  * @description Handle keyboard input - Also checks if player is on the edge of
  * the board to prevent the player from moving out of bounds. Also checks if
- * player has won by reaching the top row, then resetting the player's position.
- * playerPos var is updated with current position (used for collision
+ * player has won by reaching the top row, then resetting the player's position
+ * and incrementing the player's score.
+ * playerPos property is updated with current position (used for collision
  * detection).
  * @param  {string} key keyboard input
  */
 Player.prototype.handleInput = function(key) {
-    var moveY = 83;
-    var moveX = 101;
+    var moveY = 83; // how far player should move in the y axis
+    var moveX = 101; // how far player should move in the x axis
+    // move up
     if (key === "up" &amp;&amp; this.row > 0) {
         this.y -= moveY;
         this.row--;
+        // if player has reached the top row and won
         if (this.row === 0) {
             this.reset();
-            console.log("win!");
+            this.scoreWin();
         }
+    // move down
     } else if (key === "down" &amp;&amp; this.row &lt; 5) {
         this.y += moveY;
         this.row++;
+    // move left
     } else if (key === "left" &amp;&amp; this.col > 0) {
         this.x -= moveX;
         this.col--;
+    // move right
     } else if (key === "right" &amp;&amp; this.col &lt; 4) {
         this.x += moveX;
         this.col++;
     }
+    // set playerPos, used for collision detection
     this.setPlayerPos(this.row, this.col);
 };
 
@@ -238,8 +251,8 @@ Player.prototype.handleInput = function(key) {
  * Player.prototype.reset
  *
  * @description Reset the player position - Player's column, row, x and y
- * properties are reset to the starting postion values. playerPos var is updated
- * with current position (used for collision detection).
+ * properties are reset to the starting postion values. playerPos property is
+ * updated with current position (used for collision detection).
  */
 Player.prototype.reset = function () {
     this.col = 2;
@@ -249,7 +262,86 @@ Player.prototype.reset = function () {
     this.setPlayerPos(this.row, this.col);
 };
 
+/**
+ * Player.prototype.playerSelect
+ *
+ * @description Render the Player sprite choices on the Start Screen - each
+ * character is pushed to the allPlayer array with the properties needed to
+ * render the character on the start screen. Then all player sprites are drawn
+ * on the canvas. This method is called by the startScreen() function in
+ * engine.js.
+ */
+Player.prototype.playerSelect = function () {
+    // Array to store player sprites that were loaded in engine.js
+    var playerSprites = [
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png'
+    ];
+    // For each player sprite, push an object to allPlayers array with all
+    // properties needed to render the sprite in the correct position on the
+    // start screen
+    for (var i = 0; i &lt; playerSprites.length; i++) {
+        var spriteWidth = 101;
+        var spriteHeight = 171;
+        var topPos = 218;
+        var leftPos = (spriteWidth * i) + (20 * (i + 1));
+        var highlighted = 0;
+        var image = new Image();
+        allPlayers.push({
+            width: spriteWidth,
+            height: spriteHeight,
+            left: leftPos,
+            top: topPos,
+            sprite: playerSprites[i],
+            image: image,
+            highlighted: highlighted
+        });
+    }
+    // For each object in the allPlayers array, render the Image instance
+    // on the canvas
+    allPlayers.forEach(function(p) {
+        var image = p.image;
+        image.onload = function(){
+            ctx.drawImage(image, p.left, p.top, p.width, p.height);
+        };
+        image.src = p.sprite;
+    });
+};
 
+
+/**
+ * Player.prototype.drawScoreboard
+ *
+ * @description Draws the score and the high score on the canvas.
+ *
+ * @param  {number} score     Number of times the player has completed the game
+ * without running into an enemy.
+ * @param  {number} highScore Highest number of times the player completed the
+ * game without running into an enemy.
+ */
+Player.prototype.drawScoreboard = function (score, highScore) {
+    ctx.fillStyle = "white";
+    ctx.font="20px monospace";
+    ctx.fillText("HIGH SCORE", 70, 70);
+    ctx.fillText(highScore, 155, 70);
+    ctx.fillText("SCORE", 435, 70);
+    ctx.fillText(score, 490, 70);
+};
+
+/**
+ * Player.prototype.scoreWin
+ *
+ * @description Increments the player's score and high score properties.
+ */
+Player.prototype.scoreWin = function () {
+    this.score++;
+    // increment high score
+    if (this.score > this.highScore) {
+        this.highScore++;
+    }
+};
 
 /** Create Player instance */
 var player = new Player();
@@ -290,13 +382,13 @@ document.addEventListener('keyup', function(e) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Enemy.html">Enemy</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allEnemies">allEnemies</a></li><li><a href="global.html#createEnemies">createEnemies</a></li><li><a href="global.html#player">player</a></li><li><a href="global.html#playerPos">playerPos</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Enemy.html">Enemy</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allEnemies">allEnemies</a></li><li><a href="global.html#allPlayers">allPlayers</a></li><li><a href="global.html#createEnemies">createEnemies</a></li><li><a href="global.html#player">player</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Fri Sep 09 2016 20:16:30 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Fri Sep 23 2016 19:38:50 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>

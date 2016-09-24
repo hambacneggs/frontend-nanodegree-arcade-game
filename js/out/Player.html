@@ -47,7 +47,8 @@
 
 
 <div class="description">
-    Create Player instance
+    Create Player instance - Calls reset to set starting position.
+Sets the initial score and highScore properties.
 </div>
 
 
@@ -140,6 +141,162 @@
 
     
 
+    <h4 class="name" id="drawScoreboard"><span class="type-signature"></span>drawScoreboard<span class="signature">(score, highScore)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Draws the score and the high score on the canvas.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>score</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Number of times the player has completed the game
+without running into an enemy.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>highScore</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Highest number of times the player completed the
+game without running into an enemy.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line296">line 296</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="handleInput"><span class="type-signature"></span>handleInput<span class="signature">(key)</span><span class="type-signature"></span></h4>
 
     
@@ -149,8 +306,9 @@
 <div class="description">
     Handle keyboard input - Also checks if player is on the edge of
 the board to prevent the player from moving out of bounds. Also checks if
-player has won by reaching the top row, then resetting the player's position.
-playerPos var is updated with current position (used for collision
+player has won by reaching the top row, then resetting the player's position
+and incrementing the player's score.
+playerPos property is updated with current position (used for collision
 detection).
 </div>
 
@@ -244,7 +402,93 @@ detection).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app.js.html">app.js</a>, <a href="app.js.html#line185">line 185</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line192">line 192</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="playerSelect"><span class="type-signature"></span>playerSelect<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Render the Player sprite choices on the Start Screen - each
+character is pushed to the allPlayer array with the properties needed to
+render the character on the start screen. Then all player sprites are drawn
+on the canvas. This method is called by the startScreen() function in
+engine.js.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line246">line 246</a>
     </li></ul></dd>
     
 
@@ -283,7 +527,8 @@ detection).
 
 <div class="description">
     Render Player instance - Draw the player sprite on the canvas at
-the current x and y position.
+the current x and y position. Draw the scoreboard with the current score and
+highscore.
 </div>
 
 
@@ -327,7 +572,7 @@ the current x and y position.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app.js.html">app.js</a>, <a href="app.js.html#line158">line 158</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line161">line 161</a>
     </li></ul></dd>
     
 
@@ -366,8 +611,8 @@ the current x and y position.
 
 <div class="description">
     Reset the player position - Player's column, row, x and y
-properties are reset to the starting postion values. playerPos var is updated
-with current position (used for collision detection).
+properties are reset to the starting postion values. playerPos property is
+updated with current position (used for collision detection).
 </div>
 
 
@@ -411,7 +656,89 @@ with current position (used for collision detection).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app.js.html">app.js</a>, <a href="app.js.html#line216">line 216</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line229">line 229</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="scoreWin"><span class="type-signature"></span>scoreWin<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    Increments the player's score and high score properties.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line310">line 310</a>
     </li></ul></dd>
     
 
@@ -449,9 +776,9 @@ with current position (used for collision detection).
 
 
 <div class="description">
-    Update playerPos var with current position - Updates the global
-playerPos var which is used to detect if a enemy sprite has collided with the
-player sprite
+    Update playerPos property with current position - Updates the
+playerPos property which is used to detect if a enemy sprite has collided
+with the player sprite.
 </div>
 
 
@@ -493,7 +820,7 @@ player sprite
             <td class="type">
             
                 
-<span class="param-type">type</span>
+<span class="param-type">number</span>
 
 
             
@@ -516,7 +843,7 @@ player sprite
             <td class="type">
             
                 
-<span class="param-type">type</span>
+<span class="param-type">number</span>
 
 
             
@@ -567,7 +894,7 @@ player sprite
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app.js.html">app.js</a>, <a href="app.js.html#line171">line 171</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line176">line 176</a>
     </li></ul></dd>
     
 
@@ -607,7 +934,8 @@ player sprite
 <div class="description">
     Update Player instance - this is required for this project, but
 I haven't found a need to use a player update method. All player updates are
-taken care of by the handleInput method.
+taken care of by the handleInput method. Collision detection is handled with
+the enemy update method.
 </div>
 
 
@@ -651,7 +979,7 @@ taken care of by the handleInput method.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="app.js.html">app.js</a>, <a href="app.js.html#line148">line 148</a>
+        <a href="app.js.html">app.js</a>, <a href="app.js.html#line150">line 150</a>
     </li></ul></dd>
     
 
@@ -693,13 +1021,13 @@ taken care of by the handleInput method.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Enemy.html">Enemy</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allEnemies">allEnemies</a></li><li><a href="global.html#createEnemies">createEnemies</a></li><li><a href="global.html#player">player</a></li><li><a href="global.html#playerPos">playerPos</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Enemy.html">Enemy</a></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#allEnemies">allEnemies</a></li><li><a href="global.html#allPlayers">allPlayers</a></li><li><a href="global.html#createEnemies">createEnemies</a></li><li><a href="global.html#player">player</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Fri Sep 09 2016 20:16:30 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.1</a> on Fri Sep 23 2016 19:38:50 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>
